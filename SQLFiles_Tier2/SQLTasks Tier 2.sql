@@ -30,7 +30,7 @@ to your GitHub.
 Before starting with the questions, feel free to take your time,
 exploring the data, and getting acquainted with the 3 tables. */
 
-From: https://frankfletcher.co/springboard_phpmyadmin/index.php?route=/database/structure&db=country_club
+/* From: https://frankfletcher.co/springboard_phpmyadmin/index.php?route=/database/structure&db=country_club */
 
 
 /* QUESTIONS 
@@ -57,7 +57,7 @@ facilities in question. */
 
 SELECT facid, name AS facility_name, membercost AS member_cost, monthlymaintenance as monthly_maintenance 
 FROM `Facilities` 
-WHERE (membercost > 0 AND membercost < 0.2*monthlymaintenance);
+WHERE (membercost > 0 AND membercost < 0.2 * monthlymaintenance);
 
 
 /* Q4: Write an SQL query to retrieve the details of facilities with ID 1 and 5.
@@ -83,12 +83,24 @@ FROM Facilities;
 /* Q6: You'd like to get the first and last name of the last member(s)
 who signed up. Try not to use the LIMIT clause for your solution. */
 
+SELECT firstname,surname, MAX(joindate)
+FROM `Members` 
+WHERE zipcode !=0;
 
 
 /* Q7: Produce a list of all members who have used a tennis court.
 Include in your output the name of the court, and the name of the member
 formatted as a single column. Ensure no duplicate data, and order by
 the member name. */
+
+SELECT DISTINCT f.name, CONCAT(m.surname,', ',m.firstname) AS member_name 
+FROM Facilities f
+INNER JOIN Bookings b
+ON f.facid = b.facid
+INNER JOIN Members m
+ON b.memid = m.memid
+WHERE f.name like ('Tennis%')
+ORDER BY member_name;
 
 
 /* Q8: Produce a list of bookings on the day of 2012-09-14 which
@@ -99,20 +111,52 @@ facility, the name of the member formatted as a single column, and the cost.
 Order by descending cost, and do not use any subqueries. */
 
 
+SELECT f.name AS facility_name, CONCAT(m.surname,', ',m.firstname) AS member_name, b.slots AS booking_slot, GREATEST(f.membercost, f.guestcost) AS cost
+FROM Facilities f
+INNER JOIN Bookings b
+ON f.facid = b.facid
+INNER JOIN Members m
+ON b.memid = m.memid
+WHERE 
+	DATE(b.starttime) = '2012-09-14'
+    AND (f.membercost > 30 or f.guestcost > 30)
+ORDER BY cost DESC;
+
+
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
+
+SELECT f.name AS facility_name, 
+       CONCAT(m.surname, ', ', m.firstname) AS member_name, 
+       b.slots AS booking_slot, 
+       cost
+FROM Facilities f
+INNER JOIN Bookings b
+ON f.facid = b.facid
+INNER JOIN Members m
+ON b.memid = m.memid
+INNER JOIN (
+    SELECT facid, GREATEST(membercost, guestcost) AS cost
+    FROM Facilities
+    GROUP BY facid
+) AS sq
+ON f.facid = sq.facid
+WHERE 
+    DATE(b.starttime) = '2012-09-14'
+    AND (f.membercost > 30 OR f.guestcost > 30)
+ORDER BY cost DESC;
 
 
 /* PART 2: SQLite 
 
-/* The answer to the questions in part 2 are part of the uploaded Jupyter Notebook: 
+ The answers to questions in part 2 are part of the uploaded Jupyter Notebook: 
 
 https://github.com/BTExpress1/sqLiteT2/blob/fbf02331e66872d454bfe7c3625c7f2a41bd2fa5/SQLFiles_Tier2/sql_case_study_t2.ipynb
 
 
 Export the country club data from PHPMyAdmin, and connect to a local SQLite instance from Jupyter notebook 
-for the following questions.  
+for the following questions.  */
 
-QUESTIONS:
+/* QUESTIONS: 
 /* Q10: Produce a list of facilities with a total revenue less than 1000.
 The output of facility name and total revenue, sorted by revenue. Remember
 that there's a different cost for guests and members! */
