@@ -30,13 +30,24 @@ to your GitHub.
 Before starting with the questions, feel free to take your time,
 exploring the data, and getting acquainted with the 3 tables. */
 
+From: https://frankfletcher.co/springboard_phpmyadmin/index.php?route=/database/structure&db=country_club
+
 
 /* QUESTIONS 
 /* Q1: Some of the facilities charge a fee to members, but some do not.
 Write a SQL query to produce a list of the names of the facilities that do. */
 
+SELECT name, membercost 
+FROM `Facilities` 
+WHERE membercost > 0;
 
 /* Q2: How many facilities do not charge a fee to members? */
+
+SELECT COUNT(name) 
+FROM `Facilities` 
+WHERE membercost = 0;
+
+Result 4
 
 
 /* Q3: Write an SQL query to show a list of facilities that charge a fee to members,
@@ -44,9 +55,17 @@ where the fee is less than 20% of the facility's monthly maintenance cost.
 Return the facid, facility name, member cost, and monthly maintenance of the
 facilities in question. */
 
+SELECT facid, name AS facility_name, membercost AS member_cost, monthlymaintenance as monthly_maintenance 
+FROM `Facilities` 
+WHERE (membercost > 0 AND membercost < 0.2*monthlymaintenance);
+
 
 /* Q4: Write an SQL query to retrieve the details of facilities with ID 1 and 5.
 Try writing the query without using the OR operator. */
+
+SELECT * 
+FROM Facilities
+WHERE facid in(1,5);
 
 
 /* Q5: Produce a list of facilities, with each labelled as
@@ -54,9 +73,16 @@ Try writing the query without using the OR operator. */
 more than $100. Return the name and monthly maintenance of the facilities
 in question. */
 
+SELECT name AS facility_name, monthlymaintenance AS monthly_maintenance, 
+	CASE
+		WHEN monthlymaintenance > 100 THEN 'expensive'
+        ELSE 'cheap'
+	END AS cost_category
+FROM Facilities;
 
 /* Q6: You'd like to get the first and last name of the last member(s)
 who signed up. Try not to use the LIMIT clause for your solution. */
+
 
 
 /* Q7: Produce a list of all members who have used a tennis court.
@@ -76,7 +102,12 @@ Order by descending cost, and do not use any subqueries. */
 /* Q9: This time, produce the same result as in Q8, but using a subquery. */
 
 
-/* PART 2: SQLite
+/* PART 2: SQLite 
+
+/* The answer to the questions in part 2 are part of the uploaded Jupyter Notebook: 
+
+https://github.com/BTExpress1/sqLiteT2/blob/fbf02331e66872d454bfe7c3625c7f2a41bd2fa5/SQLFiles_Tier2/sql_case_study_t2.ipynb
+
 
 Export the country club data from PHPMyAdmin, and connect to a local SQLite instance from Jupyter notebook 
 for the following questions.  
