@@ -128,21 +128,17 @@ ORDER BY cost DESC;
 SELECT f.name AS facility_name, 
        CONCAT(m.surname, ', ', m.firstname) AS member_name, 
        b.slots AS booking_slot, 
-       cost
+       GREATEST(f.membercost, f.guestcost) AS cost
 FROM Facilities f
 INNER JOIN Bookings b
 ON f.facid = b.facid
 INNER JOIN Members m
 ON b.memid = m.memid
-INNER JOIN (
-    SELECT facid, GREATEST(membercost, guestcost) AS cost
-    FROM Facilities
-    GROUP BY facid
-) AS sq
-ON f.facid = sq.facid
 WHERE 
     DATE(b.starttime) = '2012-09-14'
-    AND (f.membercost > 30 OR f.guestcost > 30)
+    AND (SELECT GREATEST(f2.membercost, f2.guestcost)
+         FROM Facilities f2
+         WHERE f2.facid = f.facid) > 30
 ORDER BY cost DESC;
 
 
