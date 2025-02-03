@@ -155,11 +155,11 @@ for the following questions.  */
 /* QUESTIONS: 
 /* Q10: Produce a list of facilities with a total revenue less than 1000.
 The output of facility name and total revenue, sorted by revenue. Remember
-that there's a different cost for guests and members! */
+that there's a different cost for guests and members! 
 
 The answers to questions in part 2 are part of the uploaded Jupyter Notebook: 
 
-https://github.com/BTExpress1/sqLiteT2/blob/fbf02331e66872d454bfe7c3625c7f2a41bd2fa5/SQLFiles_Tier2/sql_case_study_t2.ipynb
+https://github.com/BTExpress1/sqLiteT2/blob/fbf02331e66872d454bfe7c3625c7f2a41bd2fa5/SQLFiles_Tier2/sql_case_study_t2.ipynb */
 
 /* Q11: Produce a report of members and who recommended them in alphabetic surname,firstname order */
 
